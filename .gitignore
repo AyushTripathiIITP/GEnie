@@ -1,7 +1,8 @@
 # Secrets — NEVER commit
 .env
 .env.*
-!.env.example      # the template carries no secrets; keep it in the repo
+# keep the template (no secrets) — note: gitignore has no inline comments, so this is its own line
+!.env.example
 *.key
 secrets.*
 
