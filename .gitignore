@@ -1,6 +1,7 @@
 # Secrets — NEVER commit
 .env
 .env.*
+!.env.example      # the template carries no secrets; keep it in the repo
 *.key
 secrets.*
 
