@@ -49,8 +49,13 @@ class Config:
     # --- Loop safety ---
     max_steps: int = int(os.environ.get("JOBAGENT_MAX_STEPS", "40"))
     # "step"  = pause for human confirmation before every actuating action (click/type/key/drag/scroll)
-    # "auto"  = run unattended up to max_steps (will fill AND can submit forms — use with care)
+    # "auto"  = run unattended up to max_steps. Even in auto, CLICKS still require confirmation
+    #           unless allow_submit is True — the engine can't tell a "Submit" click from any other,
+    #           so a click is the conservative gate point.
     mode: str = os.environ.get("JOBAGENT_MODE", "step")
+    # Code-level interlock: when False, click actions are never auto-executed (always confirmed),
+    # so a final Submit/Apply can't fire unattended. Set True (via --allow-submit) to lift it.
+    allow_submit: bool = os.environ.get("JOBAGENT_ALLOW_SUBMIT", "").lower() in ("1", "true", "yes")
 
     # --- Screen / scaling ---
     # The image we send to Claude. Smaller = cheaper + historically more accurate; larger = crisper text.

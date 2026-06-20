@@ -93,6 +93,8 @@ def main() -> None:
     cfg = Config()
     if args.auto:
         cfg.mode = "auto"
+    if args.allow_submit:
+        cfg.allow_submit = True
     if args.max_steps is not None:
         cfg.max_steps = args.max_steps
     if args.model:

@@ -41,10 +41,24 @@ python -m jobagent.engine.run --task "Apply to the LinkedIn job open in Chrome"
 
 ### Modes
 - **Default (`step`)** — pauses before every click/type/key and asks you to confirm. Safe.
-- **`--auto`** — runs unattended up to `--max-steps`. Faster, but it acts without asking.
-- **`--allow-submit`** — permits clicking the final Submit/Apply. **Omitted by default**: the
-  engine fills the form and stops at the submit button for you to review and click. This is
-  the safe default for LinkedIn (auto-submitting violates their ToS and risks your account).
+- **`--auto`** — runs typing/keys/scrolls unattended up to `--max-steps`. **Clicks still pause
+  for confirmation** unless you also pass `--allow-submit` (see below).
+- **`--allow-submit`** — lifts the click interlock so clicks (including the final Submit/Apply)
+  run without asking. **Omitted by default.**
+
+How the submit interlock actually works (it's enforced in code, not just by a prompt): the
+engine can't tell a "Submit" click from any other click, so it treats **every click** as the
+gate point. A click is auto-executed only when both `--auto` and `--allow-submit` are set;
+otherwise it always asks you first. So:
+
+| flags | typing/scrolling | clicks |
+|---|---|---|
+| (none) `step` | confirm each | confirm each |
+| `--auto` | automatic | **confirm each** |
+| `--auto --allow-submit` | automatic | automatic (can submit) |
+
+Keeping `--allow-submit` off is the safe default for LinkedIn — auto-submitting violates their
+ToS and risks your account, so you stay the one approving the Apply click.
 
 Abort anytime by **slamming the mouse into a screen corner** (pyautogui failsafe), or Ctrl-C.
 

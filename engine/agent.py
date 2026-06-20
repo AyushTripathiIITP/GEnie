@@ -19,6 +19,12 @@ _ACTUATING = {
     "left_click", "right_click", "middle_click", "double_click", "triple_click",
     "left_click_drag", "left_mouse_down", "left_mouse_up", "type", "key", "hold_key", "scroll",
 }
+# Click-like actions: the conservative gate point, since the engine can't identify a Submit
+# button. These are never auto-executed unless allow_submit is set (the real submit interlock).
+_CLICKS = {
+    "left_click", "right_click", "middle_click", "double_click", "triple_click",
+    "left_click_drag", "left_mouse_down",
+}
 
 
 class ComputerAgent:
@@ -102,12 +108,19 @@ class ComputerAgent:
         return {"type": "tool_result", "tool_use_id": tool_use_id, "content": content}
 
     def _confirm(self, action: str, inp: dict) -> bool:
-        if self.cfg.mode != "step" or action not in _ACTUATING:
-            if self.cfg.mode == "step" and action not in _ACTUATING:
-                # read-only action (screenshot/zoom/move/wait) — just announce it
+        # Read-only actions (screenshot/zoom/mouse_move/wait) always run; announce in step mode.
+        if action not in _ACTUATING:
+            if self.cfg.mode == "step":
                 print(f"   · {action} {_short(inp)}")
             return True
-        print(f"\n➡️  PROPOSED: {action} {_short(inp)}")
+        is_click = action in _CLICKS
+        # Auto-execute only when: auto mode AND (it's not a click, or submit is explicitly allowed).
+        # => clicks are always confirmed unless --allow-submit, even in --auto. This is the
+        #    code-level interlock that actually keeps a final Submit from firing unattended.
+        if self.cfg.mode == "auto" and (self.cfg.allow_submit or not is_click):
+            return True
+        gate = "CLICK — could be Submit; --allow-submit not set" if (is_click and not self.cfg.allow_submit) else action
+        print(f"\n➡️  CONFIRM {gate}: {action} {_short(inp)}")
         ans = input("   [Enter]=do it  s=skip  q=quit > ").strip().lower()
         if ans == "q":
             sys.exit("Stopped by user.")

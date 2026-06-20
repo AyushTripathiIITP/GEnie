@@ -48,10 +48,23 @@ def _key_token(tok: str) -> str:
 
 
 def _paste_text(text: str) -> None:
-    """Type arbitrary (incl. unicode) text reliably via the macOS clipboard."""
+    """Type arbitrary (incl. unicode) text via the macOS clipboard, restoring the
+    user's previous clipboard afterwards so we don't clobber what they had copied."""
+    try:
+        prev = subprocess.run(["pbpaste"], capture_output=True).stdout
+    except Exception:  # noqa: BLE001 — clipboard read is best-effort
+        prev = None
     subprocess.run("pbcopy", input=text.encode("utf-8"), check=True)
-    time.sleep(0.05)
+    # Wait until the pasteboard actually holds our text before pasting (avoids a race).
+    for _ in range(25):
+        cur = subprocess.run(["pbpaste"], capture_output=True).stdout.decode("utf-8", "ignore")
+        if cur == text:
+            break
+        time.sleep(0.02)
     pyautogui.hotkey("command", "v")
+    time.sleep(0.15)  # let the paste consume the clipboard before we restore it
+    if prev is not None:
+        subprocess.run("pbcopy", input=prev, check=False)
 
 
 class Actuator:
@@ -108,7 +121,13 @@ class Actuator:
             return None
 
         if action == "key":
-            tokens = [_key_token(t) for t in str(inp["text"]).replace(" ", "+").split("+") if t]
+            raw = str(inp["text"])
+            if raw.strip() == "":          # a literal space means the spacebar
+                pyautogui.press("space")
+                return None
+            tokens = [_key_token(t) for t in raw.replace(" ", "+").split("+") if t]
+            if not tokens:
+                return None
             if len(tokens) == 1:
                 pyautogui.press(tokens[0])
             else:
@@ -129,7 +148,9 @@ class Actuator:
             amount = int(inp.get("scroll_amount", 3))
             direction = inp.get("scroll_direction", "down")
             mods = _modifiers_from_text(inp.get("text"))
-            clicks = amount * 40  # pyautogui scroll units are coarse on macOS
+            # On macOS pyautogui scroll units are LINES (fine-grained), not pixels — a few
+            # lines per requested "notch". (Anthropic's docs warn large values overshoot.)
+            clicks = max(1, amount) * 3
             def _do():
                 if direction == "down":
                     pyautogui.scroll(-clicks)
