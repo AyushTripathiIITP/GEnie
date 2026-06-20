@@ -15,18 +15,20 @@ from dataclasses import dataclass, field
 
 # Per-model computer-use wiring. Pick the row matching MODEL.
 _TOOL_MATRIX = {
-    # newer tool: Opus 4.8/4.7/4.6, Sonnet 4.6, Opus 4.5
+    # newer tool: Opus 4.8/4.7/4.6, Sonnet 4.6, Opus 4.5 — all support the effort param + zoom
     "new": {
         "tool_type": "computer_20251124",
         "beta": "computer-use-2025-11-24",
         "supports_zoom": True,
+        "supports_effort": True,
         "image_long_edge_limit": 2576,   # Opus 4.8/4.7 accept up to 2576px on the long edge
     },
-    # older tool: Sonnet 4.5, Haiku 4.5, Opus 4.1, etc.
+    # older tool: Sonnet 4.5, Haiku 4.5, Opus 4.1, etc. — no zoom, and effort param 400s here
     "old": {
         "tool_type": "computer_20250124",
         "beta": "computer-use-2025-01-24",
         "supports_zoom": False,
+        "supports_effort": False,
         "image_long_edge_limit": 1568,   # earlier models: 1568px long edge, ~1.15MP
     },
 }
@@ -99,6 +101,11 @@ class Config:
     @property
     def supports_zoom(self) -> bool:
         return self._row()["supports_zoom"]
+
+    @property
+    def supports_effort(self) -> bool:
+        # effort (output_config) 400s on Haiku 4.5 / Sonnet 4.5 (the old-tool models).
+        return self._row()["supports_effort"]
 
     @property
     def image_long_edge_limit(self) -> int:

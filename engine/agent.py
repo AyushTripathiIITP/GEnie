@@ -56,16 +56,33 @@ class ComputerAgent:
         messages = [{"role": "user", "content": task}]
         tools = [self._tool_def()]
 
+        # effort is unsupported on Haiku 4.5 / Sonnet 4.5 — omit output_config there to avoid a 400.
+        extra = {"output_config": {"effort": self.cfg.effort}} if self.cfg.supports_effort else {}
+
         for step in range(1, self.cfg.max_steps + 1):
-            resp = self.client.beta.messages.create(
-                model=self.cfg.model,
-                max_tokens=self.cfg.max_tokens,
-                system=self.system_prompt,
-                messages=messages,
-                tools=tools,
-                output_config={"effort": self.cfg.effort},
-                betas=[self.cfg.beta],
-            )
+            try:
+                resp = self.client.beta.messages.create(
+                    model=self.cfg.model,
+                    max_tokens=self.cfg.max_tokens,
+                    system=self.system_prompt,
+                    messages=messages,
+                    tools=tools,
+                    betas=[self.cfg.beta],
+                    **extra,
+                )
+            except anthropic.APIStatusError as e:
+                msg = str(e)
+                if "credit balance" in msg or "Plans & Billing" in msg:
+                    endpoint = self.cfg.base_url or "https://api.anthropic.com"
+                    sys.exit(
+                        f"\n✋ Out of API credits for model '{self.cfg.model}' via {endpoint}.\n"
+                        "   This is a billing issue on the Claude account behind that endpoint — not a bug.\n"
+                        "   Fix one of:\n"
+                        "     • Top up the Anthropic account behind the LiteLLM proxy, then re-run.\n"
+                        "     • Use a Claude API key that has credit: set ANTHROPIC_API_KEY=... in\n"
+                        "       jobagent/engine/.env and remove the LITELLM_* lines (uses api.anthropic.com).\n"
+                    )
+                raise
             messages.append({"role": "assistant", "content": resp.content})
 
             # Surface Claude's narration so you can follow along.
