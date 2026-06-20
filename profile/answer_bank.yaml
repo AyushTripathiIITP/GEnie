@@ -1,0 +1,51 @@
+# Answer bank — reusable answers for recurring application questions.
+# The /apply skill reads this to pre-fill forms. When a NEW question appears during a session,
+# the agent asks you once, then APPENDS the answer here so it's never asked again.
+#
+# Style rule for generated free-text answers: first person, specific, 2-4 sentences,
+# grounded in master_profile.yaml facts only. Never invent experience.
+
+screening:
+  years_of_experience_ml: "1"
+  years_of_experience_python: "3"
+  years_of_experience_aws: "1"
+  years_of_experience_pytorch: "2"
+  years_of_experience_fastapi: "2"        # confirmed by Ayush 2026-06-10 (counting projects + work)
+  years_of_experience_postgresql: "2"     # confirmed by Ayush 2026-06-10 (counting projects + work)
+  years_of_experience_agentic_ai: "1"     # LangGraph/agents at Windflow + DecoverAI
+  years_of_experience_mcp: "1"            # MCP tools at Windflow
+  years_of_experience_azure: "0"          # AWS only, no Azure
+  highest_education: "Bachelor's degree (BTech, IIT Patna, 2025)"
+  authorized_to_work_in_india: "Yes"
+  require_visa_sponsorship_us: "Yes"
+  willing_to_undergo_background_check: "Yes"
+  start_availability: "Within 30 days"           # matches logistics.notice_period
+  expected_salary_monthly_gross_inr: "210000"     # = 25 LPA / 12, for forms asking monthly
+  preferred_work_location: "India, Gurgaon (open to remote / Bengaluru)"
+  english_proficiency: "Professional working proficiency"
+
+common_questions:
+  why_this_company: |
+    TEMPLATE — tailor per job: 1 sentence connecting their product/mission to my LLM-workflow
+    and ML background, 1 sentence on a specific thing they do that I'd want to work on.
+  biggest_achievement: |
+    Improved OCR accuracy from 97% to 99% at DecoverAI by integrating OpenAI function
+    calling — closing the last 3% required redesigning the extraction pipeline, not just
+    prompt tweaks. It shipped to production and removed manual review from the workflow.
+  tell_us_about_yourself: |
+    I'm an AI Engineer at Windflow.ai and a 2025 IIT Patna graduate. I build production LLM
+    workflows — most recently automating data ingestion with n8n (40% faster processing) and
+    adding LangGraph guardrails that cut error rates by 25%. Before that I interned at
+    DecoverAI doing backend + ML work on AWS. I'm also a competitive programmer (Codeforces).
+
+# Hard rules the agent must respect when filling forms:
+rules:
+  - Always tick "Mark job as a top choice" when LinkedIn offers it (it's quota-limited per
+    month — spend it whenever available), and fill the accompanying required message with a
+    tailored 2-4 sentence pitch drafted from profile facts.
+  - Submit applications directly after filling (Ayush authorized auto-submit 2026-06-10, and on
+    2026-06-11 authorized making reasonable assumptions for unknown answers without asking).
+    Assumptions must be derived from profile facts and conventions; log every assumed answer
+    here afterward. Floor that never moves: no inflating years of experience, no fake credentials.
+  - Never answer salary/CTC questions without an explicit value in master_profile.logistics.
+  - After the user answers a new question, append it to this file under the right section.

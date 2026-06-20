@@ -1,0 +1,25 @@
+# Secrets — NEVER commit
+.env
+.env.*
+*.key
+secrets.*
+
+# Engine runtime artifacts (may contain PII from screenshots of LinkedIn)
+runs/
+screenshots/
+*.png
+*.jpg
+*.jpeg
+!docs/**/*.png        # allow doc images if any
+
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+.mypy_cache/
+.pytest_cache/
+.ruff_cache/
+
+# OS
+.DS_Store

@@ -1,0 +1,86 @@
+# Master profile — single source of truth for all applications.
+# Parsed from resume/Ayush_Tripathi_Resume.pdf. Keep this updated; everything else derives from it.
+
+identity:
+  first_name: Ayush
+  last_name: Tripathi
+  email: ayush.tripathiiitp@gmail.com
+  phone: "+91 9140430060"
+  phone_country_code: "+91"
+  linkedin: https://www.linkedin.com/in/ayush-tripathi-aaa58a231/
+  github: https://github.com/AyushTripathiIITP
+  current_location: Gurgaon, Haryana, India
+
+headline: AI Engineer @ Windflow.ai | IIT Patna '25 | ML, LLM workflows, AWS
+
+education:
+  - institution: Indian Institute of Technology (IIT) Patna
+    degree: BTech, Electrical and Electronics Engineering
+    cpi: "8.07"
+    start: 2021-05
+    end: 2025-05
+    location: Patna, India
+  - institution: Loyola International School
+    degree: Senior Secondary (CBSE), 85.0%
+    start: 2019-04
+    end: 2021-03
+    location: Lucknow, India
+
+experience:
+  - title: AI Engineer
+    company: Windflow.ai
+    location: Gurgaon, Haryana, India (On Site)
+    start: 2025-09
+    end: present
+    bullets:
+      - Automated data ingestion workflows using n8n, reducing processing time by 40%.
+      - Integrated guardrails into AI workflows with LangGraph, lowering error rates by 25%.
+  - title: Software Engineer Intern
+    company: DecoverAI
+    location: Bengaluru, Karnataka, India (Remote)
+    start: 2025-01
+    end: 2025-06
+    bullets:
+      - Integrated AWS Cognito, SNS, and SQS for user management and real-time notifications.
+      - Implemented end-to-end profile picture upload and retrieval using Amazon S3.
+      - Improved OCR accuracy from 97% to 100% by integrating OpenAI function calling.
+      - Performed automated testing using Cucumber and Cypress frameworks.
+
+projects:
+  - name: Color sensor prototype using ANN
+    context: Prof. Saurabh Kumar Pandey, IIT Patna (Jan–May 2024)
+    bullets:
+      - Compact spectacle-mounted device helping colour-blind people perceive colour.
+      - MLP with two hidden layers (10 and 15 neurons), 95% colour-identification accuracy.
+  - name: Crypto Price Prediction Alpha
+    context: IIT Kharagpur (Jan–Feb 2024)
+    bullets:
+      - Time-series forecasting with ML/DL; LSTM models over multiple memory windows.
+      - Backtested 1700% profit with 8% max drawdown.
+
+accomplishments:
+  - Amazon Machine Learning School 2024 (completed).
+  - JEE Advanced 2021 AIR 8365 (of 170k+ candidates).
+  - JEE Mains 2021 top 2 percentile (of 1.14M+ candidates).
+  - Codeforces Pupil, active competitive programmer.
+
+skills:
+  ml_ai: [Deep Learning, PyTorch, Computer Vision, Image Processing, LLM workflows, LangGraph, OpenAI function calling, n8n, Time-series forecasting, MLP, LSTM]
+  cloud_backend: [AWS Cognito, AWS SNS, AWS SQS, Amazon S3, Backend development, MCP tools]
+  testing: [Cucumber, Cypress]
+  cs_core: [Algorithms and Data Structures, System Design, DBMS, Discrete Mathematics, Digital Design]
+  math: [Probability and Random Processes, Linear Algebra, Multivariable Calculus, Complex Analysis]
+
+# ---- Fill these in — applications constantly ask for them ----
+logistics:
+  total_experience_years: "1"            # ~6mo internship + 9mo full-time as of mid-2026; adjust how you want to present it
+  notice_period: "30 days"
+  current_ctc: "18LPA"
+  expected_ctc: "25LPA"
+  willing_to_relocate: "yes"
+  preferred_locations: ["Bengaluru", "Remote"]
+  work_authorization:
+    india: citizen
+    usa: "requires sponsorship"
+    other: "requires sponsorship"
+  open_to_remote: true

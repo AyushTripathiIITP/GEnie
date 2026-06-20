@@ -1,0 +1,58 @@
+# What to hunt for, and what to skip. The /apply skill scores every job against this.
+
+target_roles:
+  - AI Engineer
+  - Machine Learning Engineer
+  - ML Engineer
+  - Data Scientist
+  - Applied Scientist
+  - LLM Engineer
+  - GenAI Engineer
+  - Deep Learning Engineer
+
+seniority: [Entry level, Associate]   # ~1 YOE as of mid-2026
+
+keywords_boost:   # +1 fit point each when in the job description
+  - LLM
+  - LangGraph / LangChain
+  - PyTorch
+  - AWS
+  - agents / agentic
+  - RAG
+  - computer vision
+  - n8n / workflow automation
+
+deal_breakers:    # auto-skip, never surface these
+  - requires 4+ years of experience
+  - requires PhD
+  - requires US/EU work authorization with no sponsorship
+  - staffing-agency repost with no named company
+  - unpaid / "equity only"
+
+locations:
+  - Bengaluru
+  - Remote (India)
+  # TODO: confirm against master_profile.logistics.preferred_locations
+
+linkedin:
+  easy_apply_only: true        # phase 1: highest throughput, fully prefillable
+  date_posted: past_24_hours
+  # Learned 2026-06-10 session: the f_E (experience level) URL filter HIDES good matches —
+  # BayOne and EveriAI only surfaced without it. Build URLs WITHOUT f_E and filter by
+  # reading the JD instead. Also: "Machine Learning Engineer" and "Data Scientist" 24h
+  # Easy Apply searches returned zero on-family roles; best-yielding keywords were
+  # "AI Engineer", "Generative AI Engineer", "LLM Engineer".
+  use_experience_filter: false
+  # Search URL pattern the agent uses (f_AL=true is the Easy Apply filter):
+  # https://www.linkedin.com/jobs/search/?keywords=KEYWORDS&location=LOCATION&f_AL=true&f_TPR=r604800&f_E=2
+
+fit_scoring:      # 0-10; agent computes and logs it for every job it reads
+  must_match_role: true        # title matches target_roles family, else skip
+  threshold_apply: 6           # >= 6 → prefill and queue for your review
+  threshold_maybe: 4           # 4-5 → log in tracker as 'maybe', don't prefill
+
+pace:
+  max_applications_per_session: 15
+  max_sessions_per_day: 2
+  # Human pacing keeps the account safe AND keeps quality up. Volume comes from
+  # running sessions daily, not from blasting 200 in one sitting.
