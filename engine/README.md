@@ -62,9 +62,21 @@ ToS and risks your account, so you stay the one approving the Apply click.
 
 Abort anytime by **slamming the mouse into a screen corner** (pyautogui failsafe), or Ctrl-C.
 
+## Using a LiteLLM proxy (instead of the direct Anthropic API)
+Set these in `.env` and they take precedence over `ANTHROPIC_API_KEY`:
+```
+LITELLM_BASE_URL=https://litellm.windflow.ai/v1
+LITELLM_API_KEY=sk-...
+JOBAGENT_MODEL=claude-opus-4-7      # a computer-use model your proxy serves
+```
+The engine strips the trailing `/v1` automatically (the Anthropic SDK appends `/v1/messages`,
+which is also where LiteLLM's Anthropic-compatible endpoint lives). Computer use — the
+`computer_20251124` tool and `computer-use-2025-11-24` beta header — is verified to pass through
+LiteLLM. The startup line prints the resolved endpoint so you can confirm.
+
 ## Key facts (so you can tune it)
-- Model: `claude-opus-4-8` (computer-use capable). **Not** `claude-fable-5` — Fable 5 isn't on
-  the computer-use supported list and the API will reject the tool.
+- Model: `claude-opus-4-8` direct, or `claude-opus-4-7` via the proxy — both computer-use capable.
+  **Not** `claude-fable-5` — Fable 5 isn't on the computer-use supported list and the API rejects the tool.
 - Tool: `computer_20251124`, beta header `computer-use-2025-11-24`.
 - Retina scaling is handled in `screen.py`: it captures physical pixels, downscales to a
   model image (`--long edge` ≤ 2576 on Opus 4.8), and maps Claude's coordinates back to the

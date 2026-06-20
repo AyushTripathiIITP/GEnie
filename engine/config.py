@@ -38,13 +38,35 @@ _NEW_TOOL_MODELS = {
 }
 
 
+def _resolve_base_url() -> str | None:
+    """Point the engine at a proxy (e.g. LiteLLM) or the direct Anthropic API.
+
+    The Anthropic SDK appends `/v1/messages` to base_url, and LiteLLM's
+    Anthropic-compatible endpoint also lives at `/v1/messages`, so a base of
+    `https://host/v1` would double to `/v1/v1/messages`. Strip a trailing `/v1`.
+    Returns None to use the default api.anthropic.com.
+    """
+    raw = os.environ.get("LITELLM_BASE_URL") or os.environ.get("ANTHROPIC_BASE_URL")
+    if not raw:
+        return None
+    raw = raw.rstrip("/")
+    if raw.endswith("/v1"):
+        raw = raw[:-3]
+    return raw
+
+
 @dataclass
 class Config:
     # --- Model ---
+    # When using the LiteLLM proxy, set JOBAGENT_MODEL to a computer-use-capable model the
+    # proxy serves (e.g. claude-opus-4-7). NOT claude-fable-5 — Fable 5 isn't computer-use.
     model: str = os.environ.get("JOBAGENT_MODEL", "claude-opus-4-8")
     max_tokens: int = 4096
     effort: str = os.environ.get("JOBAGENT_EFFORT", "medium")  # low|medium|high — medium is the computer-use sweet spot
-    api_key: str | None = field(default_factory=lambda: os.environ.get("ANTHROPIC_API_KEY"))
+    # api_key: LiteLLM proxy key wins, else direct Anthropic key.
+    api_key: str | None = field(default_factory=lambda: os.environ.get("LITELLM_API_KEY") or os.environ.get("ANTHROPIC_API_KEY"))
+    # base_url: proxy endpoint (LiteLLM) or None for api.anthropic.com.
+    base_url: str | None = field(default_factory=_resolve_base_url)
 
     # --- Loop safety ---
     max_steps: int = int(os.environ.get("JOBAGENT_MAX_STEPS", "40"))

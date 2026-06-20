@@ -30,10 +30,13 @@ _CLICKS = {
 class ComputerAgent:
     def __init__(self, cfg: Config, system_prompt: str):
         if not cfg.api_key:
-            sys.exit("ANTHROPIC_API_KEY is not set. Put it in jobagent/engine/.env or export it.")
+            sys.exit("No API key. Set LITELLM_API_KEY (proxy) or ANTHROPIC_API_KEY in jobagent/engine/.env.")
         self.cfg = cfg
         self.system_prompt = system_prompt
-        self.client = anthropic.Anthropic(api_key=cfg.api_key)
+        client_kwargs = {"api_key": cfg.api_key}
+        if cfg.base_url:
+            client_kwargs["base_url"] = cfg.base_url
+        self.client = anthropic.Anthropic(**client_kwargs)
         self.screen = Screen(cfg)
         self.actuator = Actuator(cfg, self.screen)
 

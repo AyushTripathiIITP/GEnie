@@ -102,6 +102,7 @@ def main() -> None:
 
     print(f"Model: {cfg.model}  |  tool: {cfg.tool_type}  |  mode: {cfg.mode}  |  "
           f"image: {cfg.effective_long_edge}px long edge  |  submit: {'ALLOWED' if args.allow_submit else 'blocked'}")
+    print(f"Endpoint: {cfg.base_url or 'https://api.anthropic.com'}")
     print("Tip: slam the mouse into a screen corner at any time to abort (pyautogui failsafe).\n")
 
     agent = ComputerAgent(cfg, build_system_prompt(args.allow_submit))
